@@ -44,5 +44,10 @@ namespace Parser
         }
 
         public Token() { }
+
+        public static Token Copy(Token t)
+        {
+            return new Token(t.type, t.name);
+        }
     }
 }
