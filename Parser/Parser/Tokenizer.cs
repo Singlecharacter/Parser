@@ -8,9 +8,18 @@ namespace Parser
 {
     class Tokenizer
     {
-        private int currentPosition;
+        public int currentPosition
+        {
+            get;
+            private set;
+        }
 
-        public Token GetNextToken()
+        /// <summary>
+        /// Returns the next token from sourceString.
+        /// </summary>
+        /// <param name="consume">Whether to consume the token, removing it from the beginning of the sourceString.</param>
+        /// <returns></returns>
+        public Token GetNextToken(bool consume = false)
         {
             if(sourceString.Length < 1)
             {
@@ -87,11 +96,11 @@ namespace Parser
                 tokenEnd = 1;
             }
 
+            //Predefined symbols and keywords
             while(tokenEnd <= sourceString.Length && returnToken == null)
             {
                 string checkString = sourceString.Substring(0, tokenEnd);
 
-                //Predefined symbols and keywords
                 if(checkString.ToUpper() == "READ")
                 {
                     returnToken = new Token(TokenType.READ);
@@ -146,7 +155,7 @@ namespace Parser
                 tokenEnd++;
             }
 
-            if(tokenEnd < sourceString.Length)
+            if(tokenEnd < sourceString.Length && consume)
             {
                 sourceString = sourceString.Substring(tokenEnd);
                 currentPosition += tokenEnd;
@@ -155,7 +164,7 @@ namespace Parser
             {
                 returnToken = new Token(TokenType.ERROR, "Error 1: Unidentified token at position " + currentPosition);
             }
-            else
+            else if(consume)
             {
                 sourceString = "";
             }
@@ -163,7 +172,11 @@ namespace Parser
             return returnToken;
         }
 
-        private string sourceString;
+        public string sourceString
+        {
+            get;
+            private set;
+        }
 
         public Tokenizer(string source)
         {
